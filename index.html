@@ -204,7 +204,6 @@
         .light-mode .diagonal-line { background-color: #333; }
         @keyframes flipU{0%,40%{transform:rotate(180deg) translateY(0);opacity:0}50%,90%{transform:rotate(0) translateY(-34px);opacity:1}100%{transform:rotate(180deg) translateY(0);opacity:0}}
         @keyframes lineAppear{0%,45%{opacity:0}50%,90%{opacity:1}95%,100%{opacity:0}}
-
         .home-search-container{display:flex;flex-direction:column;align-items:center;gap:12px}
         .home-search-input{
             width:900px;
@@ -452,6 +451,7 @@
 
     <script>
         // NULL Browser + Bright Data Web-Unlocker
+
         class NullBrowser {
             constructor() {
                 this.tabs = new Map();
@@ -461,12 +461,14 @@
                 this.history = new Map(); // tabId → {past:[],future:[]}
                 this.currentPage = 'home'; // 'home' or 'results'
                 this.isLightMode = false;
+
                 /*  ======  FILL THESE  ======  */
                 this.bdZone   = 'web_unlocker1';        // ← zone name
                 this.bdToken  = '9e171609-0e3f-4a64-91b8-7824e2707154'; // ← bearer
                 // ====================================
                 this.initializeEventListeners();
                 this.initializeFirstTab();
+                this.initializeThemeListener();
             }
 
             initializeEventListeners() {
@@ -481,6 +483,33 @@
             initializeFirstTab() {
                 this.tabs.set('tab-1', {type:'home',url:'null://home',title:'NULL'});
                 this.history.set('tab-1', {past:[],future:[]});
+            }
+
+            /* ---------- THEME LISTENER FOR CHROMIUM SIDEBAR TOGGLE ---------- */
+            initializeThemeListener() {
+                // Listen for theme change messages from Chromium
+                // This will be called by Chromium when sidebar toggle is clicked
+                window.addEventListener('message', (event) => {
+                    // Only accept messages from same origin for security
+                    if (event.data && event.data.type === 'NULL_THEME_CHANGE') {
+                        const isLight = event.data.isLightMode;
+                        this.setTheme(isLight);
+                    }
+                });
+
+                // Also listen for direct function calls from Chromium's injected script
+                window.setNullTheme = (isLightMode) => {
+                    this.setTheme(isLightMode);
+                };
+                
+                // Request initial theme from Chromium on page load
+                // Chromium will inject the theme when page loads
+                // For now, default to dark mode, Chromium will sync it
+            }
+
+            setTheme(isLightMode) {
+                this.isLightMode = isLightMode;
+                document.body.classList.toggle('light-mode', isLightMode);
             }
 
             showPage(page) {
@@ -507,6 +536,7 @@
             handleNavInput() {
                 const raw = document.getElementById('nav-search-input').value.trim();
                 if (!raw) return;
+
                 // if it looks like a URL → visit; else → search
                 const isUrl = /^https?:\/\//i.test(raw) || raw.includes('.') && !raw.includes(' ');
                 if (isUrl) {
