@@ -22,7 +22,8 @@
             color: #333;
         }
 
-        /* Theme Toggle Switch */
+        /* Theme Toggle Switch - REMOVED BUT KEPT FOR AI THEME CONTROL */
+        /*
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -42,6 +43,7 @@
             border-color: #ccc;
             color: #333;
         }
+        */
 
         /* ---------- NAVIGATION BAR (hidden on home) ---------- */
         .nav-bar{
@@ -418,8 +420,10 @@
     </style>
 </head>
 <body>
-    <!-- Theme Toggle Switch -->
+    <!-- Theme Toggle Button - REMOVED BUT AVAILABLE FOR AI THEME CONTROL -->
+    <!--
     <button class="theme-toggle" onclick="browser.toggleTheme()">🌙 Dark Mode</button>
+    -->
 
     <!-- Navigation Bar (hidden on home) -->
     <div class="nav-bar" id="nav-bar">
@@ -490,12 +494,14 @@
             }
 
             /* ---------- THEME TOGGLE ---------- */
+            /* REMOVED BUT AVAILABLE FOR AI THEME CONTROL
             toggleTheme() {
                 this.isLightMode = !this.isLightMode;
                 document.body.classList.toggle('light-mode', this.isLightMode);
                 const toggleBtn = document.querySelector('.theme-toggle');
                 toggleBtn.textContent = this.isLightMode ? '☀️ Light Mode' : '🌙 Dark Mode';
             }
+            */
 
             /* ----------  universal input:  search OR visit URL  ---------- */
             handleNavInput() {
@@ -618,7 +624,7 @@
         window.browser={
             performSearch:()=>browser.performSearch(),
             openSearchResult:(url)=>browser.openInNewTab(url),
-            toggleTheme:()=>browser.toggleTheme()
+            // toggleTheme:()=>browser.toggleTheme() // REMOVED BUT AVAILABLE FOR AI THEME CONTROL
         };
     </script>
 </body>
